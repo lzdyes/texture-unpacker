@@ -2,11 +2,20 @@ import plist from 'plist'
 
 interface Frames {
   [key: string]: {
+    /** format 2 */
     frame: string
     offset: string
     rotated: boolean
     sourceColorRect: string
     sourceSize: string
+
+    /** format 3 */
+    aliases: Array<string>
+    spriteOffset: string
+    spriteSize: string
+    spriteSourceSize: string
+    textureRect: string
+    textureRotated: boolean
   }
 }
 
@@ -39,24 +48,38 @@ export const parseSize = (size: string) => {
   return { width, height }
 }
 
-export const cropImage = (buffer: ArrayBuffer | Uint8Array, x: number, y: number, width: number, height: number) => {
-  return new Promise<Uint8Array>(async (resolve) => {
-    const blob = new Blob([buffer])
-    const imageBitmap = await createImageBitmap(blob)
+export const parseOffset = (offset: string) => {
+  const str = offset.replace(/{/g, '[').replace(/}/g, ']')
+  const [x, y] = JSON.parse(str)
+  return { x, y }
+}
 
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
+export const parseFrame = (plist: Plist, key: string) => {
+  let rect = { x: 0, y: 0, width: 0, height: 0 }
+  let size = { width: 0, height: 0 }
+  let offset = { x: 0, y: 0 }
+  let rotated = false
 
-    const context = canvas.getContext('2d')
-    context?.drawImage(imageBitmap, x, y, width, height, 0, 0, width, height)
-
-    canvas.toBlob(async (blob) => {
-      if (blob) {
-        const arrayBuffer = await blob.arrayBuffer()
-        const buffer = new Uint8Array(arrayBuffer)
-        resolve(buffer)
+  switch (plist.metadata.format) {
+    case 2:
+      {
+        const { frame, rotated: _rotated, sourceColorRect, sourceSize } = plist.frames[key]
+        rect = parseRect(frame)
+        size = parseSize(sourceSize)
+        offset = parseRect(sourceColorRect)
+        rotated = _rotated
       }
-    })
-  })
+      break
+    case 3:
+      {
+        const { textureRect, textureRotated, spriteSourceSize, spriteOffset } = plist.frames[key]
+        rect = parseRect(textureRect)
+        size = parseSize(spriteSourceSize)
+        offset = parseOffset(spriteOffset)
+        rotated = textureRotated
+      }
+      break
+  }
+
+  return { rect, size, offset, rotated }
 }

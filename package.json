@@ -1,7 +1,13 @@
 {
   "name": "texture-unpacker",
+  "description": "A cross-platform unpack texture atlases tool built with tauri",
+  "version": "0.0.2",
+  "author": "lzdyes <lzdyes@gmail.com>",
   "private": true,
-  "version": "0.0.1",
+  "repository": {
+		"type": "git",
+		"url": "git@github.com:lzdyes/texture-unpacker.git"
+	},
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -15,7 +21,7 @@
     "vue": "^3.2.31"
   },
   "devDependencies": {
-    "@prettier/plugin-pug": "^1.20.0",
+    "@prettier/plugin-pug": "^1.20.1",
     "@tauri-apps/cli": "^1.0.0-rc.8",
     "@types/plist": "^3.0.2",
     "@vitejs/plugin-vue": "^2.3.1",

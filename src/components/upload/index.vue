@@ -1,8 +1,8 @@
 <template lang="pug" src="./index.pug"></template>
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
-import { parsePlist, parseRect, parseSize } from '@/utils'
 import type { Plist } from '@/utils'
+import { parseFrame, parsePlist, parseSize } from '@/utils'
 import { dialog, fs, path } from '@tauri-apps/api'
 import { Dir } from '@tauri-apps/api/fs'
 import { ref } from 'vue'
@@ -12,7 +12,6 @@ const darging = ref(false)
 
 const onUploadClick = async () => {
   const filePaths = (await dialog.open({ multiple: true, filters: [{ name: '', extensions: ['plist', 'png'] }] })) as Array<string>
-  console.log(filePaths)
 
   let plist: Plist | undefined, buffer: Uint8Array | undefined
 
@@ -72,8 +71,6 @@ const onDrop = async (e: DragEvent) => {
   e.preventDefault()
   darging.value = false
 
-  console.log(e.dataTransfer?.files)
-
   if (e.dataTransfer) {
     const { files } = e.dataTransfer
 
@@ -112,33 +109,27 @@ const cropImages = async (plist: Plist, buffer: Uint8Array | ArrayBuffer) => {
   originContext?.drawImage(imageBitmap, 0, 0)
 
   Object.keys(plist.frames).forEach(async (key) => {
-    const { frame, rotated, sourceColorRect, sourceSize } = plist.frames[key]
-    const { x, y, width, height } = parseRect(frame)
-    const imageData = originContext?.getImageData(x, y, rotated ? height : width, rotated ? width : height)
+    const { rect, size, offset, rotated } = parseFrame(plist, key)
+    const imageData = originContext?.getImageData(rect.x, rect.y, rotated ? rect.height : rect.width, rotated ? rect.width : rect.height)
 
     const cropCanvas = document.createElement('canvas')
-    cropCanvas.width = width
-    cropCanvas.height = height
-
     const cropContext = cropCanvas.getContext('2d')
+    cropCanvas.width = rect.width
+    cropCanvas.height = rect.height
 
     if (imageData) {
       const imageBitmap = await createImageBitmap(imageData)
-
       if (rotated) {
-        cropContext?.translate(0, height)
+        cropContext?.translate(0, rect.height)
         cropContext?.rotate((-90 * Math.PI) / 180)
       }
-
       cropContext?.drawImage(imageBitmap, 0, 0)
 
-      const imageData2 = cropContext?.getImageData(0, 0, width, height)
+      const imageData2 = cropContext?.getImageData(0, 0, rect.width, rect.height)
       if (imageData2) {
-        const { width, height } = parseSize(sourceSize)
-        const { x, y } = parseRect(sourceColorRect)
-        cropCanvas.width = width
-        cropCanvas.height = height
-        cropContext?.putImageData(imageData2, x, y)
+        cropCanvas.width = size.width
+        cropCanvas.height = size.height
+        cropContext?.putImageData(imageData2, offset.x, offset.y)
 
         cropCanvas.toBlob(async (blob) => {
           if (blob) {
