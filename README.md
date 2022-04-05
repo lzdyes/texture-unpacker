@@ -16,6 +16,7 @@ A cross-platform unpack texture atlases tool built with <a href="https://github.
 
 ## Features
 
+- Support texture pack format 2 and 3
 - Support to open file dialog to select files (.plist .png)
 - Drag files to the client
 
