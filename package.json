@@ -6,7 +6,7 @@
   "private": true,
   "repository": {
 		"type": "git",
-		"url": "git@github.com:lzdyes/texture-unpacker.git"
+		"url": "https://github.com/lzdyes/texture-unpacker"
 	},
   "scripts": {
     "dev": "vite",
