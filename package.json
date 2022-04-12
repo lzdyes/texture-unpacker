@@ -1,7 +1,7 @@
 {
   "name": "texture-unpacker",
   "description": "A cross-platform unpack texture atlases tool built with tauri",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "lzdyes <lzdyes@gmail.com>",
   "private": true,
   "repository": {
@@ -18,7 +18,7 @@
     "@tauri-apps/api": "^1.0.0-rc.3",
     "plist": "^3.0.5",
     "reset-css": "^5.0.1",
-    "vue": "^3.2.31"
+    "vue": "^3.2.32"
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^1.20.1",
