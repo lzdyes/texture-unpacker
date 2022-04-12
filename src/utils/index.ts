@@ -83,3 +83,9 @@ export const parseFrame = (plist: Plist, key: string) => {
 
   return { rect, size, offset, rotated }
 }
+
+export const extname = (path: string) => {
+  const index = path.lastIndexOf('.')
+  const extension = path.substring(index)
+  return extension
+}

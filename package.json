@@ -1,7 +1,7 @@
 {
   "name": "texture-unpacker",
   "description": "A cross-platform unpack texture atlases tool built with tauri",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "lzdyes <lzdyes@gmail.com>",
   "private": true,
   "repository": {
@@ -30,6 +30,6 @@
     "stylus": "^0.57.0",
     "typescript": "^4.6.3",
     "vite": "^2.9.1",
-    "vue-tsc": "^0.33.9"
+    "vue-tsc": "^0.34.5"
   }
 }

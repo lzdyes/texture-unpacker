@@ -2,8 +2,8 @@
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
 import type { Plist } from '@/utils'
-import { parseFrame, parsePlist, parseSize } from '@/utils'
-import { dialog, fs, path } from '@tauri-apps/api'
+import { extname, parseFrame, parsePlist, parseSize } from '@/utils'
+import { dialog, fs } from '@tauri-apps/api'
 import { Dir } from '@tauri-apps/api/fs'
 import { ref } from 'vue'
 
@@ -16,13 +16,13 @@ const onUploadClick = async () => {
   let plist: Plist | undefined, buffer: Uint8Array | undefined
 
   for (const filePath of filePaths) {
-    const extension = await path.extname(filePath)
+    const extension = extname(filePath)
     switch (extension) {
-      case 'plist':
+      case '.plist':
         const str = await fs.readTextFile(filePath)
         plist = parsePlist(str)
         break
-      case 'png':
+      case '.png':
         buffer = await fs.readBinaryFile(filePath)
         break
     }
@@ -78,13 +78,13 @@ const onDrop = async (e: DragEvent) => {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      const extension = await path.extname(file.name)
+      const extension = extname(file.name)
       switch (extension) {
-        case 'plist':
+        case '.plist':
           const str = await readTextFile(file)
           plist = parsePlist(str)
           break
-        case 'png':
+        case '.png':
           buffer = await readBinaryFile(file)
           break
       }
