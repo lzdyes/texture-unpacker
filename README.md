@@ -20,6 +20,11 @@ A cross-platform unpack texture atlases tool built with <a href="https://github.
 - Support to open file dialog to select files (.plist .png)
 - Drag files to the client
 
+## Screenshots
+
+![](docs/screenshots/windows_1.png)
+
+
 ## Install
 
 Download from [release](https://github.com/lzdyes/texture-unpacker/releases). Supports Windows x64, Linux x86_64 and macOS 11+
